@@ -1,0 +1,3 @@
+# Build results - ignore in all subfolders
+**/[Bb]in/
+**/[Oo]bj/
