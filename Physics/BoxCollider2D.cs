@@ -6,59 +6,11 @@ namespace MonoGameLibrary.Physics;
 /// <summary>
 /// An axis-aligned bounding box (AABB) collider for 2D collision detection.
 /// </summary>
-/// <remarks>
-/// <para>
-/// Box colliders define a rectangular collision area that can be positioned with an
-/// offset from the owning object's origin. This allows hitboxes that differ from
-/// the visual sprite bounds.
-/// </para>
-/// <example>
-/// Creating a collider smaller than the sprite:
-/// <code>
-/// // Sprite is 64x64, but we want a 32x48 hitbox centered at the bottom
-/// var collider = new BoxCollider2D
-/// {
-///     Width = 32,
-///     Height = 48,
-///     Offset = new Vector2(16, 16)  // Shift right and down to center
-/// };
-/// 
-/// // Get world bounds for collision checks
-/// Rectangle bounds = collider.GetBounds(playerPosition);
-/// </code>
-/// </example>
-/// <example>
-/// Using with collision resolution:
-/// <code>
-/// // Check collision against a platform
-/// Vector2 depth = collider.GetIntersectionDepth(position, platform);
-/// 
-/// if (depth != Vector2.Zero)
-/// {
-///     // Resolve along the shallower axis
-///     if (Math.Abs(depth.X) &lt; Math.Abs(depth.Y))
-///         position.X += depth.X;
-///     else
-///         position.Y += depth.Y;
-/// }
-/// </code>
-/// </example>
-/// </remarks>
 public class BoxCollider2D : ICollider2D
 {
     /// <summary>
     /// Gets or sets the offset from the object's position to the collider's top-left corner.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Use offset to position the hitbox relative to the sprite. Common patterns:
-    /// </para>
-    /// <list type="bullet">
-    ///   <item><c>Vector2.Zero</c> - Collider aligns with sprite top-left</item>
-    ///   <item><c>new Vector2(16, 0)</c> - Collider is 16 pixels right of sprite</item>
-    ///   <item><c>new Vector2(-Width/2, -Height/2)</c> - Center-origin positioning</item>
-    /// </list>
-    /// </remarks>
     public Vector2 Offset { get; set; }
 
     /// <summary>

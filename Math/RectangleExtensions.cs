@@ -12,51 +12,17 @@ public static class RectangleExtensions
     /// <summary>
     /// Calculates the signed depth of intersection between two rectangles.
     /// </summary>
-    /// <param name="rectA">The first rectangle.</param>
-    /// <param name="rectB">The second rectangle to check against.</param>
     /// <returns>
-    /// A <see cref="Vector2"/> representing the overlap depth on each axis.
-    /// The X component is negative if <paramref name="rectA"/> is to the left of <paramref name="rectB"/>.
-    /// The Y component is negative if <paramref name="rectA"/> is above <paramref name="rectB"/>.
-    /// Returns <see cref="Vector2.Zero"/> if the rectangles do not intersect.
+    /// The overlap depth on each axis. Negative values indicate rectA should move left/up.
+    /// Returns <see cref="Vector2.Zero"/> if not intersecting.
     /// </returns>
-    /// <remarks>
-    /// <para>
-    /// The returned depth vector indicates how far to move <paramref name="rectA"/> to resolve
-    /// the collision. To properly separate overlapping objects, move along the axis with the
-    /// smaller absolute value (the shallower penetration).
-    /// </para>
-    /// <example>
-    /// <code>
-    /// Rectangle player = new Rectangle(100, 100, 32, 32);
-    /// Rectangle platform = new Rectangle(90, 120, 64, 16);
-    /// 
-    /// Vector2 depth = player.GetIntersectionDepth(platform);
-    /// 
-    /// if (depth != Vector2.Zero)
-    /// {
-    ///     // Resolve along the shallower axis
-    ///     if (Math.Abs(depth.X) &lt; Math.Abs(depth.Y))
-    ///     {
-    ///         playerPosition.X += depth.X; // Push horizontally
-    ///     }
-    ///     else
-    ///     {
-    ///         playerPosition.Y += depth.Y; // Push vertically
-    ///         if (depth.Y &lt; 0)
-    ///             isOnGround = true; // Landed on top of platform
-    ///     }
-    /// }
-    /// </code>
-    /// </example>
-    /// </remarks>
     public static Vector2 GetIntersectionDepth(this Rectangle rectA, Rectangle rectB)
     {
         // Calculate half sizes
-        float halfWidthA = rectA.Width / 2.0f;
-        float halfHeightA = rectA.Height / 2.0f;
-        float halfWidthB = rectB.Width / 2.0f;
-        float halfHeightB = rectB.Height / 2.0f;
+        float halfWidthA = rectA.Width * 0.5f;
+        float halfHeightA = rectA.Height * 0.5f;
+        float halfWidthB = rectB.Width * 0.5f;
+        float halfHeightB = rectB.Height * 0.5f;
 
         // Calculate centers
         float centerAX = rectA.Left + halfWidthA;
@@ -100,8 +66,15 @@ public static class RectangleExtensions
     public static Vector2 GetCenter(this Rectangle rect)
     {
         return new Vector2(
-            rect.X + rect.Width / 2.0f,
-            rect.Y + rect.Height / 2.0f
+            rect.X + rect.Width * 0.5f,
+            rect.Y + rect.Height * 0.5f
         );
+    }
+    /// <summary>
+    /// Gets the position of the center of the bottom edge of the rectangle.
+    /// </summary>
+    public static Vector2 GetBottomCenter(this Rectangle rect)
+    {
+        return new Vector2(rect.X + rect.Width * 0.5f, rect.Bottom);
     }
 }

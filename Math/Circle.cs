@@ -25,6 +25,7 @@ public readonly struct Circle : IEquatable<Circle>
     /// Gets the location of the center of this circle.
     /// </summary>
     public readonly Point Location => new Point(X, Y);
+    
     /// <summary>
     /// Gets a circle with X=0, Y=0, and Radius=0.
     /// </summary>
@@ -34,6 +35,7 @@ public readonly struct Circle : IEquatable<Circle>
     /// Gets a value that indicates whether this circle has a radius of 0 and a location of (0, 0).
     /// </summary>
     public readonly bool IsEmpty => X == 0 && Y == 0 && Radius == 0;
+
     /// <summary>
     /// Gets the y-coordinate of the highest point on this circle.
     /// </summary>
@@ -53,6 +55,7 @@ public readonly struct Circle : IEquatable<Circle>
     /// Gets the x-coordinate of the rightmost point on this circle.
     /// </summary>
     public readonly int Right => X + Radius;
+
     /// <summary>
     /// Creates a new circle with the specified position and radius.
     /// </summary>
@@ -77,6 +80,7 @@ public readonly struct Circle : IEquatable<Circle>
         Y = location.Y;
         Radius = radius;
     }
+
     /// <summary>
     /// Returns a value that indicates whether the specified circle intersects with this circle.
     /// </summary>
@@ -88,6 +92,7 @@ public readonly struct Circle : IEquatable<Circle>
         float distanceSquared = Vector2.DistanceSquared(this.Location.ToVector2(), other.Location.ToVector2());
         return distanceSquared < radiiSquared;
     }
+
     /// <summary>
     /// Returns a value that indicates whether this circle and the specified object are equal
     /// </summary>
@@ -109,6 +114,7 @@ public readonly struct Circle : IEquatable<Circle>
     /// </summary>
     /// <returns>The hash code for this circle as a 32-bit signed integer.</returns>
     public override readonly int GetHashCode() => HashCode.Combine(X, Y, Radius);
+
     /// <summary>
     /// Returns a value that indicates if the circle on the left hand side of the equality operator is equal to the
     /// circle on the right hand side of the equality operator.
