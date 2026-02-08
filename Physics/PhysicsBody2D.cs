@@ -23,22 +23,13 @@ public class PhysicsBody2D
     public float MaxFallSpeed { get; set; } = 600f;
 
     /// <summary>
-    /// Gets or sets the horizontal drag multiplier applied when grounded.
+    /// Horizontal drag multiplier when grounded. Lower = more friction.
     /// </summary>
-    /// <remarks>
-    /// Only affects movement if using acceleration-based input. If you set
-    /// horizontal velocity directly each frame, this value has no effect.
-    /// </remarks>
     public float GroundDrag { get; set; } = 0.85f;
 
     /// <summary>
-    /// Gets or sets the horizontal drag multiplier applied when airborne.
+    /// Horizontal drag multiplier when airborne. Higher = more air control.
     /// </summary>
-    /// <remarks>
-    /// Controls how quickly horizontal momentum decays during jumps/falls.
-    /// Lower values (e.g., 0.8) give less air control; higher values (e.g., 0.98)
-    /// preserve momentum longer.
-    /// </remarks>
     public float AirDrag { get; set; } = 0.95f;
 
     /// <summary>
@@ -52,26 +43,16 @@ public class PhysicsBody2D
     /// <param name="deltaTime">Elapsed time in seconds since the last frame.</param>
     public void ApplyPhysics(float deltaTime)
     {
-        // Apply gravity only when airborne
-        // When grounded, we don't want gravity pushing us into the floor
         if (!IsOnGround)
         {
-            Velocity = new Vector2(
-                Velocity.X,
-                Velocity.Y + Gravity * deltaTime
-            );
+            Velocity = new Vector2(Velocity.X, Velocity.Y + Gravity * deltaTime);
         }
 
-        // Clamp to terminal velocity to prevent infinite fall speed
-        // This also prevents tunneling through thin platforms at high speeds
         if (Velocity.Y > MaxFallSpeed)
         {
             Velocity = new Vector2(Velocity.X, MaxFallSpeed);
         }
 
-        // Apply horizontal drag (different values for ground vs air)
-        // Ground drag is typically higher (lower value) for snappy stopping
-        // Air drag is typically lower (higher value) for better air control
         float drag = IsOnGround ? GroundDrag : AirDrag;
         Velocity = new Vector2(Velocity.X * drag, Velocity.Y);
     }
