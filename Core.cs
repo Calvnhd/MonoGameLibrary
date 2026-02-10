@@ -125,7 +125,9 @@ public class Core : Game
 
     protected override void UnloadContent()
     {
-        // Dispose of the audio controller.
+        // @TODO: Flush and close the log file before any other cleanup.
+        // GameLogger.Shutdown();
+
         Audio.Dispose();
 
         base.UnloadContent();
