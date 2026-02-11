@@ -1,12 +1,20 @@
-// Namespace: MonoGameLibrary.Utilities
+namespace MonoGameLibrary.Utilities;
 
-// XML doc: Predefined log category constants for discoverability via autocomplete.
-// The category parameter on GameLogger methods is a plain string, so custom values
-// like "Player" or "AI" are always accepted — these constants are convenience, not a constraint.
-// Add new constants organically as patterns emerge.
+/// <summary>
+/// Predefined log category constants for discoverability via autocomplete.
+/// Custom strings like "Player" or "AI" are always accepted — these constants are convenience, not a constraint.
+/// </summary>
+public static class LogCategory
+{
+    /// <summary>Game lifecycle: initialization, shutdown, scene transitions.</summary>
+    public const string Core = "Core";
 
-// Static class LogCategory
-    // const string Core      = "Core"       — Game lifecycle: init, shutdown, scene transitions
-    // const string Physics   = "Physics"    — Physics bodies, colliders, collision resolution
-    // const string Graphics  = "Graphics"   — Sprites, animations, textures, rendering
-    // const string Input     = "Input"      — Keyboard, mouse, gamepad input handling
+    /// <summary>Physics bodies, colliders, collision resolution.</summary>
+    public const string Physics = "Physics";
+
+    /// <summary>Sprites, animations, textures, rendering.</summary>
+    public const string Graphics = "Graphics";
+
+    /// <summary>Keyboard, mouse, gamepad input handling.</summary>
+    public const string Input = "Input";
+}

@@ -1,93 +1,108 @@
-// Using: System, System.Diagnostics, System.IO
-// Namespace: MonoGameLibrary.Utilities
+using System;
+using System.Diagnostics;
+using System.IO;
 
-// XML doc: Lightweight logger with dual output (console + file).
-// Provides four severity methods: Trace, Info, Warn, Error.
-// Trace calls are compiled out of Release builds via [Conditional("DEBUG")].
+#nullable enable
 
-// Static class GameLogger
+namespace MonoGameLibrary.Utilities;
 
+/// <summary>
+/// Lightweight logger with dual output (console + file).
+/// Provides four severity methods: Trace, Info, Warn, Error.
+/// Trace calls are compiled out of Release builds via [Conditional("DEBUG")].
+/// </summary>
+public static class GameLogger
+{
     // ─── Static Fields ───
 
-    // s_levelLabels: readonly string array { "TRACE", "INFO ", "WARN ", "ERROR" }
-    //   — Pre-built padded labels indexed by (int)LogLevel. Avoids Enum.ToString() allocation.
-    //   — None is excluded because it's never formatted into output.
+    // Pre-built padded labels indexed by (int)LogLevel. Avoids Enum.ToString() allocation.
+    private static readonly string[] s_levelLabels = { "TRACE", "INFO ", "WARN ", "ERROR" };
 
-    // s_writer: StreamWriter, nullable, initially null
-    //   — Buffered file writer for logs/game.log. Created lazily on first log call.
+    // Buffered file writer for logs/game.log. Created lazily on first log call.
+    private static StreamWriter? s_writer;
 
-    // s_initialized: bool, initially false
-    //   — Guards EnsureInitialized() so it runs exactly once.
+    // Guards EnsureInitialized() so it runs exactly once.
+    private static bool s_initialized;
 
-    // s_lock: readonly object = new object()
-    //   — Synchronization lock for initialization and shutdown (AppDomain.ProcessExit runs on a different thread).
+    // Synchronization lock for initialization and shutdown.
+    private static readonly object s_lock = new object();
 
     // ─── Public Properties ───
 
-    // MinimumLevel: LogLevel, get/set, default = LogLevel.Trace
-    //   — Messages with level < MinimumLevel are discarded before formatting.
-    //   — Set to LogLevel.None to suppress all output.
+    /// <summary>
+    /// Messages with level below this value are discarded before formatting.
+    /// Set to <see cref="LogLevel.None"/> to suppress all output.
+    /// </summary>
+    public static LogLevel MinimumLevel { get; set; } = LogLevel.Trace;
 
     // ─── Public Methods ───
 
-    // [Conditional("DEBUG")]
-    // Trace(string category, string message)
-    //   — XML doc: Log verbose per-frame diagnostic output. Compiled out in Release builds.
-    //   — Delegate to Log(LogLevel.Trace, category, message)
+    /// <summary>Log verbose per-frame diagnostic output. Compiled out in Release builds.</summary>
+    [Conditional("DEBUG")]
+    public static void Trace(string category, string message)
+    {
+        // TODO: Delegate to Log(LogLevel.Trace, category, message)
+    }
 
-    // Info(string category, string message)
-    //   — XML doc: Log noteworthy lifecycle events and state changes.
-    //   — Delegate to Log(LogLevel.Info, category, message)
+    /// <summary>Log noteworthy lifecycle events and state changes.</summary>
+    public static void Info(string category, string message)
+    {
+        // TODO: Delegate to Log(LogLevel.Info, category, message)
+    }
 
-    // Warn(string category, string message)
-    //   — XML doc: Log unexpected but recoverable situations.
-    //   — Delegate to Log(LogLevel.Warning, category, message)
+    /// <summary>Log unexpected but recoverable situations.</summary>
+    public static void Warn(string category, string message)
+    {
+        // TODO: Delegate to Log(LogLevel.Warning, category, message)
+    }
 
-    // Error(string category, string message)
-    //   — XML doc: Log broken or failed operations.
-    //   — Delegate to Log(LogLevel.Error, category, message)
+    /// <summary>Log broken or failed operations.</summary>
+    public static void Error(string category, string message)
+    {
+        // TODO: Delegate to Log(LogLevel.Error, category, message)
+    }
 
-    // Shutdown()
-    //   — XML doc: Flush and close the log file. Called by Core.UnloadContent() during game exit.
-    //   — Lock on s_lock
-    //     — If s_writer is not null:
-    //       — Flush the writer
-    //       — Dispose the writer
-    //       — Set s_writer to null
-    //     — Set s_initialized to false (prevent re-initialization after shutdown)
-    //       — Actually, set to true so EnsureInitialized won't re-open the file.
-    //       — After shutdown, Log() will skip the file write because s_writer is null.
+    /// <summary>Flush and close the log file. Called by Core.UnloadContent() during game exit.</summary>
+    public static void Shutdown()
+    {
+        // TODO: Lock on s_lock
+        //   If s_writer is not null: Flush, Dispose, set to null
+        //   Keep s_initialized = true so EnsureInitialized won't re-open the file
+    }
 
     // ─── Private Methods ───
 
-    // Log(LogLevel level, string category, string message)
-    //   — If level < MinimumLevel, return immediately (no formatting, no allocation)
-    //   — Call EnsureInitialized()
-    //   — Build formatted string via FormatMessage(level, category, message)
-    //   — Write formatted string to Console.WriteLine
-    //   — If s_writer is not null, write formatted string to s_writer.WriteLine
+    private static void Log(LogLevel level, string category, string message)
+    {
+        // TODO: If level < MinimumLevel, return immediately
+        // TODO: Call EnsureInitialized()
+        // TODO: Build formatted string via FormatMessage(level, category, message)
+        // TODO: Write to Console.WriteLine
+        // TODO: If s_writer is not null, write to s_writer.WriteLine
+    }
 
-    // EnsureInitialized()
-    //   — If s_initialized is true, return immediately
-    //   — Lock on s_lock
-    //     — Double-check: if s_initialized is true, return (another thread may have initialized)
-    //     — Set s_initialized to true
-    //     — Create "logs" directory via Directory.CreateDirectory("logs")
-    //     — Open StreamWriter on "logs/game.log" with append=true
-    //     — Set AutoFlush = false (buffered writing to avoid per-line disk I/O)
-    //     — Write session separator header:
-    //       — "================================================================================"
-    //       — "=== Session Start: {DateTime.Now:yyyy-MM-dd HH:mm:ss} =========================="
-    //       — "================================================================================"
-    //     — Hook AppDomain.CurrentDomain.ProcessExit += OnProcessExit
-    //       — This is a fallback flush in case Shutdown() is never called (e.g., window X button)
+    private static void EnsureInitialized()
+    {
+        // TODO: If s_initialized, return immediately
+        // TODO: Lock on s_lock, double-check s_initialized
+        // TODO: Directory.CreateDirectory("logs")
+        // TODO: Open StreamWriter on "logs/game.log", append=true, AutoFlush=false
+        // TODO: Write session separator header
+        // TODO: Hook AppDomain.CurrentDomain.ProcessExit += OnProcessExit
+        // TODO: Set s_initialized = true
+    }
 
-    // FormatMessage(LogLevel level, string category, string message) → string
-    //   — Get timestamp: DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-    //   — Get level label: s_levelLabels[(int)level]
-    //   — Pad category to 10 characters: category.PadRight(10)
-    //   — Return: "{timestamp} [{label}] {paddedCategory} | {message}"
+    private static string FormatMessage(LogLevel level, string category, string message)
+    {
+        // TODO: Get timestamp: DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+        // TODO: Get level label: s_levelLabels[(int)level]
+        // TODO: Pad category to 10 chars: category.PadRight(10)
+        // TODO: Return: "{timestamp} [{label}] {paddedCategory} | {message}"
+        return string.Empty;
+    }
 
-    // OnProcessExit(object sender, EventArgs e)
-    //   — Call Shutdown()
-    //   — This is the fallback — ensures the file is flushed even if Core.UnloadContent() didn't run
+    private static void OnProcessExit(object? sender, EventArgs e)
+    {
+        // TODO: Call Shutdown() as fallback flush
+    }
+}
