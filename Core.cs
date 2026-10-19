@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameLibrary.Audio;
 using MonoGameLibrary.Input;
 using MonoGameLibrary.Scenes;
+using MonoGameLibrary.Utilities;
 
 namespace MonoGameLibrary;
 
@@ -125,7 +126,9 @@ public class Core : Game
 
     protected override void UnloadContent()
     {
-        // Dispose of the audio controller.
+        // Flush and close the log file before any other cleanup.
+        GameLogger.Shutdown();
+
         Audio.Dispose();
 
         base.UnloadContent();
