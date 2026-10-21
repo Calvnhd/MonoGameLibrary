@@ -122,16 +122,19 @@ public class Core : Game
 
         // Create a new audio controller.
         Audio = new AudioController();
+
+        GameLogger.Info(LogCategory.Core, "Initialization completed.");
     }
 
     protected override void UnloadContent()
     {
-        // Flush and close the log file before any other cleanup.
-        GameLogger.Shutdown();
+        GameLogger.Info(LogCategory.Core, "Shutdown started.");
 
         Audio.Dispose();
 
         base.UnloadContent();
+
+        GameLogger.Info(LogCategory.Core, "Shutdown completed.");
     }
 
     protected override void Update(GameTime gameTime)
@@ -186,6 +189,10 @@ public class Core : Game
 
     private static void TransitionScene()
     {
+        var previousScene = s_activeScene?.GetType().FullName ?? "(none)";
+        var nextScene = s_nextScene?.GetType().FullName ?? "(none)";
+        GameLogger.Info(LogCategory.Core, $"Scene transition started: {previousScene} -> {nextScene}.");
+
         // If there is an active scene, dispose of it.
         if (s_activeScene != null)
         {
@@ -208,5 +215,7 @@ public class Core : Game
         {
             s_activeScene.Initialize();
         }
+
+        GameLogger.Info(LogCategory.Core, $"Scene transition completed: {previousScene} -> {nextScene}.");
     }
 }
