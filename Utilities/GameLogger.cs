@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Security;
+using System.Text;
 
 #nullable enable
 
@@ -11,6 +12,7 @@ namespace MonoGameLibrary.Utilities;
 /// <summary>
 /// Synchronous terminal and buffered current-run file logging.
 /// Expected sink failures disable that sink without preventing the other output.
+/// File output uses BOM-free UTF-8 and replaces malformed diagnostic text.
 /// </summary>
 public static class GameLogger
 {
@@ -69,7 +71,8 @@ public static class GameLogger
             {
                 Directory.CreateDirectory(directory);
                 s_writer = new StreamWriter(new FileStream(
-                    absoluteFilePath, FileMode.Create, FileAccess.Write, FileShare.Read));
+                    absoluteFilePath, FileMode.Create, FileAccess.Write, FileShare.Read),
+                    new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: false));
                 return true;
             }
             catch (Exception error) when (IsFileFailure(error))
@@ -150,7 +153,7 @@ public static class GameLogger
         }
     }
 
-    private static IOException? WriteTerminal(string message, bool isSinkFailure = false)
+    private static Exception? WriteTerminal(string message, bool isSinkFailure = false)
     {
         if (!s_terminalAvailable)
             return null;
@@ -162,7 +165,7 @@ public static class GameLogger
             terminal.Flush();
             return null;
         }
-        catch (IOException error)
+        catch (Exception error) when (error is IOException or ObjectDisposedException)
         {
             s_terminalAvailable = false;
             return error;
